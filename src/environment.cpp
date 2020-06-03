@@ -289,8 +289,8 @@ int main (int argc, char** argv)
     
     // SCENE OPTION
     bool generatedHighway = false; // flag for simple Highway visualization
-    bool realPCD = true;           // flag to stream real PCD data 
-    bool realPCDFrame = false;     // When false PCD will be streamed
+    bool realPCD = true;           // flag for real PCD data 
+    bool realPCDFrame = false;     // flag to choose single frame or to stream PCD data. When false PCD will be streamed
 
     if(generatedHighway)
     {
