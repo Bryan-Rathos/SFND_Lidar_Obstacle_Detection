@@ -17,34 +17,53 @@
 #include <vector>
 #include <ctime>
 #include <chrono>
+#include <unordered_set>
+#include <memory>
 #include "render/box.h"
+#include "3dkdtree.h"
 
 template<typename PointT>
-class ProcessPointClouds {
-public:
+class ProcessPointClouds 
+{
+    // these protected member functions are helpers for the public member functions for this class which can be accessed only by this class itself
+    protected:
+        void insertCloudKDTree(typename pcl::PointCloud<PointT>::Ptr cloud, std::unique_ptr<KdTree>& tree);
 
-    //constructor
-    ProcessPointClouds();
-    //deconstructor
-    ~ProcessPointClouds();
+        void Proximity(uint index, typename pcl::PointCloud<PointT>::Ptr cloud, typename pcl::PointCloud<PointT>::Ptr newCluster, std::vector<bool>& processed, std::unique_ptr<KdTree>& tree, const float distanceTol);
 
-    void numPoints(typename pcl::PointCloud<PointT>::Ptr cloud);
+        std::vector<typename pcl::PointCloud<PointT>::Ptr> EuclideanCluster(typename pcl::PointCloud<PointT>::Ptr cloud, std::unique_ptr<KdTree>& tree, const float distanceTol);
+        
+        template <typename U>
+        std::vector<U> CrossProduct(std::vector<U>& v1, std::vector<U>& v2);
 
-    typename pcl::PointCloud<PointT>::Ptr FilterCloud(typename pcl::PointCloud<PointT>::Ptr cloud, float filterRes, Eigen::Vector4f minPoint, Eigen::Vector4f maxPoint);
+        
+    public:
 
-    std::pair<typename pcl::PointCloud<PointT>::Ptr, typename pcl::PointCloud<PointT>::Ptr> SeparateClouds(pcl::PointIndices::Ptr inliers, typename pcl::PointCloud<PointT>::Ptr cloud);
+        //constructor
+        ProcessPointClouds();
+        //destructor
+        ~ProcessPointClouds();
 
-    std::pair<typename pcl::PointCloud<PointT>::Ptr, typename pcl::PointCloud<PointT>::Ptr> SegmentPlane(typename pcl::PointCloud<PointT>::Ptr cloud, int maxIterations, float distanceThreshold);
+        void numPoints(typename pcl::PointCloud<PointT>::Ptr cloud);
 
-    std::vector<typename pcl::PointCloud<PointT>::Ptr> Clustering(typename pcl::PointCloud<PointT>::Ptr cloud, float clusterTolerance, int minSize, int maxSize);
+        typename pcl::PointCloud<PointT>::Ptr FilterCloud(typename pcl::PointCloud<PointT>::Ptr cloud, float filterRes, Eigen::Vector4f minPoint, Eigen::Vector4f maxPoint);
 
-    Box BoundingBox(typename pcl::PointCloud<PointT>::Ptr cluster);
+        std::pair<typename pcl::PointCloud<PointT>::Ptr, typename pcl::PointCloud<PointT>::Ptr> SeparateClouds(pcl::PointIndices::Ptr inliers, typename pcl::PointCloud<PointT>::Ptr cloud);
 
-    void savePcd(typename pcl::PointCloud<PointT>::Ptr cloud, std::string file);
+        std::pair<typename pcl::PointCloud<PointT>::Ptr, typename pcl::PointCloud<PointT>::Ptr> SegmentPlane(typename pcl::PointCloud<PointT>::Ptr cloud, int maxIterations, float distanceThreshold);
 
-    typename pcl::PointCloud<PointT>::Ptr loadPcd(std::string file);
+        std::pair<typename pcl::PointCloud<PointT>::Ptr, typename pcl::PointCloud<PointT>::Ptr> RansacPlane(typename pcl::PointCloud<PointT>::Ptr cloud, int maxIterations, float distanceTol);
+        
+        std::vector<typename pcl::PointCloud<PointT>::Ptr> Clustering(typename pcl::PointCloud<PointT>::Ptr cloud, float clusterTolerance, int minSize, int maxSize);
 
-    std::vector<boost::filesystem::path> streamPcd(std::string dataPath);
-  
+        std::vector<typename pcl::PointCloud<PointT>::Ptr> CustomClustering(typename pcl::PointCloud<PointT>::Ptr cloud, float clusterTolerance, int minSize, int maxSize);
+
+        Box BoundingBox(typename pcl::PointCloud<PointT>::Ptr cluster);
+
+        void savePcd(typename pcl::PointCloud<PointT>::Ptr cloud, std::string file);
+
+        typename pcl::PointCloud<PointT>::Ptr loadPcd(std::string file);
+
+        std::vector<boost::filesystem::path> streamPcd(std::string dataPath);
 };
 #endif /* PROCESSPOINTCLOUDS_H_ */
