@@ -2,6 +2,9 @@
 
 <img src="media/ObstacleDetectionFPS.gif" width="700" height="400" />
 
+* Developed point cloud object detection pipeline and implemented RANSAC for segmentation, KD-Tree and Euclidean clustering algorithms from scratch. 
+* Verified results of segmentation and clustering with PCL functions and used PCL visualizer for displaying the results for both the methods.
+
 ### Welcome to the Sensor Fusion course for self-driving cars.
 
 In this course we will be talking about sensor fusion, whch is the process of taking data from multiple sensors and combining it to give us a better understanding of the world around us. we will mostly be focusing on two sensors, lidar, and radar. By the end we will be fusing the data from these two sensors to track multiple cars on the road, estimating their positions and speed.
